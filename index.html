@@ -1,0 +1,587 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راهنمای اتصال ELM327 به ویندوز</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: Tahoma, Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            line-height: 2;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            padding: 35px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            color: white;
+            font-size: 26px;
+        }
+
+        header p {
+            margin: 0;
+            color: #dbeafe;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        h2 {
+            color: #60a5fa;
+            font-size: 20px;
+            margin-top: 0;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            color: #93c5fd;
+            font-size: 16px;
+        }
+
+        p, li {
+            color: #cbd5e1;
+        }
+
+        ul, ol {
+            padding-right: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code, pre {
+            direction: ltr;
+            text-align: left;
+            font-family: Consolas, monospace;
+        }
+
+        pre {
+            background: #020617;
+            color: #86efac;
+            padding: 17px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        code {
+            background: #334155;
+            color: #93c5fd;
+            padding: 3px 7px;
+            border-radius: 5px;
+        }
+
+        .note {
+            background: #172554;
+            border-right: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #dbeafe;
+        }
+
+        .success {
+            background: #052e24;
+            border-right: 4px solid #22c55e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #bbf7d0;
+        }
+
+        .warning {
+            background: #451a03;
+            border-right: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #fde68a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #334155;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        td {
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .checklist label {
+            display: block;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .checklist input {
+            margin-left: 10px;
+            accent-color: #3b82f6;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            header {
+                padding: 22px;
+            }
+
+            header h1 {
+                font-size: 21px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>راهنمای اتصال دانگل Bluetooth ELM327</h1>
+        <p>
+            آموزش اتصال، شناسایی پورت COM و تست اطلاعات واقعی خودرو
+            در سیستم‌عامل ویندوز
+        </p>
+    </header>
+
+    <!-- مرحله اول -->
+    <section class="card">
+        <h2>مرحله اول: آماده‌سازی دانگل و خودرو</h2>
+
+        <p>وسایل موردنیاز:</p>
+
+        <ul>
+            <li>دانگل Bluetooth ELM327</li>
+            <li>خودروی دارای پشتیبانی OBD-II</li>
+            <li>کامپیوتر ویندوزی مجهز به بلوتوث</li>
+            <li>Python نصب‌شده روی ویندوز</li>
+        </ul>
+
+        <h3>مراحل اتصال دانگل</h3>
+
+        <ol>
+            <li>محل درگاه OBD-II خودرو را پیدا کن.</li>
+            <li>دانگل را به درگاه متصل کن.</li>
+            <li>سوئیچ خودرو را روی حالت ON قرار بده.</li>
+            <li>چراغ‌های روی دانگل را بررسی کن.</li>
+        </ol>
+
+        <div class="note">
+            برای Pair کردن معمولاً روشن بودن سوئیچ کافی است.
+            برای دریافت اطلاعات RPM باید موتور روشن باشد.
+        </div>
+    </section>
+
+    <!-- مرحله دوم -->
+    <section class="card">
+        <h2>مرحله دوم: اتصال بلوتوث به ویندوز</h2>
+
+        <ol>
+            <li>وارد Settings ویندوز شو.</li>
+            <li>بخش Bluetooth & Devices را باز کن.</li>
+            <li>بلوتوث را روشن کن.</li>
+            <li>روی Add Device کلیک کن.</li>
+            <li>گزینه Bluetooth را انتخاب کن.</li>
+            <li>منتظر شناسایی دانگل بمان.</li>
+        </ol>
+
+        <p>نام دانگل ممکن است یکی از این موارد باشد:</p>
+
+        <pre>OBDII
+OBD2
+ELM327
+V-LINK
+OBD Bluetooth</pre>
+
+        <h3>رمزهای احتمالی Pairing</h3>
+
+        <pre>1234
+0000</pre>
+
+        <div class="success">
+            هدف: دستگاه باید در ویندوز با وضعیت Paired یا Connected
+            نمایش داده شود.
+        </div>
+    </section>
+
+    <!-- مرحله سوم -->
+    <section class="card">
+        <h2>مرحله سوم: پیدا کردن پورت COM</h2>
+
+        <ol>
+            <li>کلیدهای Win + X را فشار بده.</li>
+            <li>Device Manager را باز کن.</li>
+            <li>قسمت Ports (COM & LPT) را پیدا کن.</li>
+            <li>پورت مربوط به دانگل بلوتوث را بررسی کن.</li>
+        </ol>
+
+        <p>نمونه خروجی:</p>
+
+        <pre>Standard Serial over Bluetooth link (COM5)
+Standard Serial over Bluetooth link (COM6)</pre>
+
+        <div class="warning">
+            اگر دو پورت Incoming و Outgoing وجود داشت،
+            معمولاً باید Outgoing را انتخاب کنی.
+        </div>
+
+        <h3>تنظیم در فایل .env</h3>
+
+        <pre>OBD_PORT=COM6</pre>
+
+        <p>
+            شماره COM6 صرفاً نمونه است. باید شماره واقعی پورت خروجی
+            دانگل خودت را وارد کنی.
+        </p>
+    </section>
+
+    <!-- مرحله چهارم -->
+    <section class="card">
+        <h2>مرحله چهارم: بررسی پورت با Python</h2>
+
+        <h3>فعال‌سازی محیط مجازی</h3>
+
+        <pre>.\venv\Scripts\Activate.ps1</pre>
+
+        <h3>نصب کتابخانه PySerial</h3>
+
+        <pre>pip install pyserial</pre>
+
+        <h3>نمایش پورت‌های موجود</h3>
+
+        <pre>python -c "from serial.tools import list_ports; [print(p.device, '|', p.description) for p in list_ports.comports()]"</pre>
+
+        <p>خروجی فرضی:</p>
+
+        <pre>COM3 | Bluetooth Device
+COM6 | Standard Serial over Bluetooth link</pre>
+
+        <div class="success">
+            شماره پورت خروجی دانگل را یادداشت کن.
+        </div>
+    </section>
+
+    <!-- مرحله پنجم -->
+    <section class="card">
+        <h2>مرحله پنجم: تست واقعی ارتباط با ELM327</h2>
+
+        <p>
+            در ریشه پروژه فایل زیر را ایجاد کن:
+        </p>
+
+        <pre>test_bluetooth_obd.py</pre>
+
+        <h3>کد تست اتصال</h3>
+
+        <pre>import obd
+
+PORT = "COM6"  # شماره پورت خودت را جایگزین کن
+
+connection = None
+
+try:
+    print("Connecting to ELM327...")
+
+    connection = obd.OBD(
+        portstr=PORT,
+        baudrate=38400,
+        fast=False,
+        timeout=10,
+    )
+
+    print("Connected:", connection.is_connected())
+    print("Port:", connection.port_name())
+
+    if connection.is_connected():
+        commands = {
+            "RPM": obd.commands.RPM,
+            "Speed": obd.commands.SPEED,
+            "Coolant": obd.commands.COOLANT_TEMP,
+            "Engine Load": obd.commands.ENGINE_LOAD,
+            "Voltage": obd.commands.CONTROL_MODULE_VOLTAGE,
+        }
+
+        for name, command in commands.items():
+            response = connection.query(command)
+            print(f"{name}: {response.value}")
+
+    else:
+        print("Could not connect to vehicle.")
+
+except Exception as error:
+    print("Error:", repr(error))
+
+finally:
+    if connection is not None:
+        connection.close()
+        print("Connection closed.")</pre>
+
+        <h3>اجرای تست</h3>
+
+        <pre>python test_bluetooth_obd.py</pre>
+
+        <h3>خروجی نمونه در صورت موفقیت</h3>
+
+        <pre>Connecting to ELM327...
+Connected: True
+Port: COM6
+
+RPM: 850.0 revolutions_per_minute
+Speed: 0 kilometers_per_hour
+Coolant: 83 degrees_Celsius
+Engine Load: 12.5 percent
+Voltage: 14.2 volts
+
+Connection closed.</pre>
+
+        <div class="note">
+            مقادیر بالا نمونه هستند و مقادیر واقعی به وضعیت خودرو،
+            ECU و پارامترهای پشتیبانی‌شده بستگی دارند.
+        </div>
+    </section>
+
+    <!-- مرحله ششم -->
+    <section class="card">
+        <h2>مرحله ششم: اتصال به پروژه اصلی Car Assistant</h2>
+
+        <p>
+            اگر تست مستقل موفق بود، فایل .env را تغییر بده:
+        </p>
+
+        <pre>OBD_PORT=COM6</pre>
+
+        <p>سپس پروژه اصلی را اجرا کن:</p>
+
+        <pre>python main.py</pre>
+
+        <div class="success">
+            کلاس فعلی OBDClient از تنظیمات پورت استفاده می‌کند؛
+            بنابراین برای تغییر نوع اتصال، نیازی به تغییر اساسی
+            ساختار پروژه نیست.
+        </div>
+    </section>
+
+    <!-- مرحله هفتم -->
+    <section class="card">
+        <h2>مرحله هفتم: عیب‌یابی مشکلات احتمالی</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>خطا یا وضعیت</th>
+                    <th>علت احتمالی</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Access is denied</td>
+                    <td>پورت توسط برنامه دیگری اشغال شده است.</td>
+                </tr>
+
+                <tr>
+                    <td>Port not found</td>
+                    <td>شماره COM اشتباه است.</td>
+                </tr>
+
+                <tr>
+                    <td>Unable to connect</td>
+                    <td>دانگل Pair نشده یا پورت اشتباه است.</td>
+                </tr>
+
+                <tr>
+                    <td>No response from adapter</td>
+                    <td>مشکل ارتباط سریال یا Baudrate</td>
+                </tr>
+
+                <tr>
+                    <td>Unable to connect to vehicle</td>
+                    <td>مشکل ارتباط دانگل با ECU خودرو</td>
+                </tr>
+
+                <tr>
+                    <td>Connected: False</td>
+                    <td>ارتباط کامل برقرار نشده است.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>نکات مهم عیب‌یابی</h3>
+
+        <ul>
+            <li>برنامه‌های دیاگ دیگر را هنگام تست ببند.</li>
+            <li>شماره COM را دوباره بررسی کن.</li>
+            <li>در صورت نیاز Baudrate را بررسی کن.</li>
+            <li>سوئیچ و سازگاری خودرو با OBD-II را بررسی کن.</li>
+            <li>اگر دانگل BLE باشد، ممکن است پورت COM ایجاد نشود.</li>
+        </ul>
+    </section>
+
+    <!-- مرحله هشتم -->
+    <section class="card">
+        <h2>مرحله هشتم: نکته مهم درباره پروژه</h2>
+
+        <p>
+            در اجرای قبلی پروژه روی ویندوز، خطای Pydantic مربوط به
+            diagnostic_status داشتیم.
+        </p>
+
+        <p>
+            بنابراین حتی اگر اتصال OBD موفق باشد، ممکن است اجرای
+            main.py همچنان به اصلاح بخش پردازش داده نیاز داشته باشد.
+        </p>
+
+        <div class="warning">
+            ابتدا اتصال سخت‌افزاری را با test_bluetooth_obd.py
+            تأیید می‌کنیم و سپس مشکلات احتمالی لایه پردازش را بررسی
+            خواهیم کرد.
+        </div>
+    </section>
+
+    <!-- چک لیست -->
+    <section class="card checklist">
+        <h2>چک‌لیست مراحل انجام کار</h2>
+
+        <label>
+            <input type="checkbox">
+            اتصال دانگل به خودرو
+        </label>
+
+        <label>
+            <input type="checkbox">
+            Pair کردن دانگل با ویندوز
+        </label>
+
+        <label>
+            <input type="checkbox">
+            پیدا کردن پورت COM خروجی
+        </label>
+
+        <label>
+            <input type="checkbox">
+            نصب PySerial
+        </label>
+
+        <label>
+            <input type="checkbox">
+            اجرای تست مستقل Python
+        </label>
+
+        <label>
+            <input type="checkbox">
+            دریافت RPM و Speed واقعی
+        </label>
+
+        <label>
+            <input type="checkbox">
+            تنظیم فایل .env
+        </label>
+
+        <label>
+            <input type="checkbox">
+            اجرای main.py
+        </label>
+    </section>
+
+    <!-- اطلاعات نهایی -->
+    <section class="card">
+        <h2>اطلاعات موردنیاز برای ادامه راه‌اندازی</h2>
+
+        <p>پس از انجام مراحل، این اطلاعات را آماده کن:</p>
+
+        <ol>
+            <li>آیا دانگل با ویندوز Pair شد؟</li>
+            <li>شماره پورت COM خروجی چیست؟</li>
+            <li>آیا دانگل Bluetooth Classic است یا BLE؟</li>
+            <li>آیا تست Python موفق بود؟</li>
+            <li>آیا RPM و Speed دریافت شدند؟</li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Car Assistant Project | ELM327 Bluetooth Setup Guide
+        <br>
+        Windows + Python + OBD-II
+    </footer>
+
+</div>
+
+</body>
+</html>
